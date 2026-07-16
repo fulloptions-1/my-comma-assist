@@ -61,8 +61,7 @@ jobs:
           target.mkdir(parents=True)
 
           with zipfile.ZipFile(archive) as zf:
-              members = zf.infolist()
-              for member in members:
+              for member in zf.infolist():
                   destination = (target / member.filename).resolve()
                   if target not in destination.parents and destination != target:
                       raise SystemExit(f"Unsafe ZIP path: {member.filename}")
@@ -79,18 +78,7 @@ jobs:
           print(f"Published {len(rows)} files under snapshot/tree")
           PY
 
-      - name: Install and verify snapshot
-        shell: bash
-        working-directory: snapshot/tree
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pytest -q
-          python -m compileall -q atlas tests scripts
-          node --check atlas/static/app.js
-          python scripts/check_app_import.py
-
-      - name: Commit verified extracted source
+      - name: Commit extracted source
         shell: bash
         run: |
           git config user.name "atlas-snapshot-bot"
@@ -102,3 +90,15 @@ jobs:
           fi
           git commit -m "Publish extracted current Atlas source for Fable M1.6 and M2"
           git push origin HEAD:atlas-fable-m2-current
+
+      - name: Verify published snapshot
+        continue-on-error: true
+        shell: bash
+        working-directory: snapshot/tree
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pytest -q
+          python -m compileall -q atlas tests scripts
+          node --check atlas/static/app.js
+          python scripts/check_app_import.py
