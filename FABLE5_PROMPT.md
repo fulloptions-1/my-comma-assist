@@ -1,50 +1,27 @@
-# Copy-paste prompt for Claude Fable 5 / Claude Code
+# Start Atlas M1.6 and M2 from the current deployed source
 
-Use the public repository `fulloptions-1/my-comma-assist` and check out branch `atlas-claude-review`.
+Use public repository `fulloptions-1/my-comma-assist` and branch `atlas-fable-m2-current`.
 
-You are the principal engineer responsible for reviewing, correcting, hardening, and extending Atlas Engine. This branch is a standalone public snapshot. Ignore the unrelated historical `master` branch and work only from the files visible on `atlas-claude-review`.
+Do not use `master`, `atlas-claude-review`, or the inherited root source as the product baseline.
 
-Read root `CLAUDE.md`, every tracked file, and all documents under `docs/` before changing code. Cross-check documentation against implementation. Do not assume a claimed feature exists merely because it is described.
+1. Read root `CLAUDE.md` and `SNAPSHOT_INSTRUCTIONS.md`.
+2. Fetch `atlas-fable-m2-current-snapshot.zip` through the GitHub connector.
+3. Verify SHA-256:
+   `31bab6e16af95b35c1ad73be9b5f72303a740e12740b2cc4aa2d5d4bcd67ba24`
+4. Extract it into a fresh local directory `atlas-current`.
+5. Work only inside `atlas-current`.
+6. Read the extracted `CLAUDE.md`, extracted `FABLE5_PROMPT.md`, every source and test file, `docs/LIVE_PRODUCT_GAPS.md`, and `docs/NEXT_ACCEPTANCE_MATRIX.md`.
+7. Establish the exact baseline by running all locally possible tests and checks.
+8. Execute the extracted prompt completely.
 
-The original system was a blocking single-active-agent Python console swarm using YAML-frontmatter agent Markdown files, skills, MCP subprocesses, `board.md`, handover control transfer, and an unofficial Gemini web backend with ghost-payload, tarpit, cut-off, pacing, and fingerprint-recovery logic. The new target is a small deterministic automation kernel with durable event-log-driven runs, versioned definitions, direct invocation, a non-blocking Concierge, a deterministic Capability Resolver, typed tools, recursive workflows, automations, questions, exact approvals, replaceable model providers, MCP adapters, remote nodes, external coding executors, mobile gateways, and strong testing.
+The first required milestone is **M1.6**, which must turn the current working iPhone product into a clear, usable interface with target/model selection, capability library, guided provider setup, friendly failures, retry, proper Markdown, single response rendering, conversations, cost visibility, and PWA/mobile corrections.
 
-The current snapshot is only a car-maintenance vertical slice. It has FastAPI, SQLite run events, interactions, basic package validation, two deterministic agents, two car tools, idempotent maintenance logging, Docker/Railway configuration, and a mobile UI. It does not yet contain the complete provider runtime, workflow engine, automations, MCP adapters, external nodes, encrypted model settings, production authentication, Postgres migrations, or full legacy migration. Verify the exact state from code.
+After packaging M1.6, continue independently into **M2**: durable tasks/workers, child runs, parent wake-ups, cancellation, workflow DAGs, parallel branches, joins, questions, approvals, timers, events, retries, and failure policies.
 
-Your task is not to generate a high-level opinion and stop. You must:
+Create checkpoint artifacts after every coherent milestone:
 
-1. Establish a clean baseline by installing dependencies, running tests, starting the app, and exercising direct and Auto car flows.
-2. Write `docs/FABLE5_FINDINGS.md` with factual code-referenced findings, severity, reproduction steps, and evidence.
-3. Write `docs/FABLE5_IMPLEMENTATION_PLAN.md` with prioritized vertical slices, dependencies, risks, and acceptance tests.
-4. Fix correctness, durability, security, provider-boundary, deployment, and mobile-UX defects that should be addressed now.
-5. Add tests before or with every critical change.
-6. Implement the smallest coherent next platform layer rather than scattered stubs. Prioritize:
-   - explicit run state machine and recovery;
-   - package/version validation;
-   - provider interface plus deterministic fake provider and one native low-cost provider adapter;
-   - encrypted provider-key settings without exposing keys;
-   - generic agent compiler/runtime with typed tool calls;
-   - Tool Gateway schema/permission/idempotency/locking policies;
-   - durable task/worker semantics;
-   - generic workflow DAG and child-run behavior;
-   - restart and race tests;
-   - persistent hosted storage and migrations;
-   - authentication and mobile usability.
-7. Preserve direct invocation and do not reintroduce a default Router-agent token chain.
-8. Preserve the rule that workflows are recursive and packages are organizational bundles.
-9. Treat manager agents as optional judgment components, not mandatory hierarchy nodes.
-10. Quarantine any legacy Gemini web parsing/recovery inside a provider adapter if retained.
-11. Never commit secrets, copy legacy credentials, or expose API keys in prompts, events, logs, API responses, or screenshots.
-12. Keep work on `atlas-claude-review`; do not merge or push to `master`.
-13. Make small, reviewable commits.
-14. Update `docs/FABLE5_CHANGELOG.md` with every implemented change and exact verification commands/results.
-15. End with the acceptance matrix completed as PASS, PARTIAL, FAIL, ACCOUNT-BLOCKED, or DEFERRED, with evidence.
+- tree ZIP;
+- ordered Git-format patches ZIP;
+- manifest JSON with hashes, commits, migrations, environment changes, exact tests and actual results.
 
-Non-negotiable architecture rule:
-
-> Models propose decisions. Deterministic code owns state, execution, permissions, retries, scheduling, safety, recovery, budgets, approvals, and side effects.
-
-Do not add Kubernetes, a message broker, a vector database, microservices, or speculative abstraction unless current requirements and measured behavior prove they are necessary. Prefer one deployable service and durable database until scale forces separation.
-
-Do not claim the whole platform complete when only interfaces or demos exist. Clearly separate implemented engineering, credential-blocked integrations, and deferred work.
-
-Start by reading `CLAUDE.md`, then follow its required reading and baseline procedure exactly.
+Do not wait for user confirmation between milestones. Do not claim deployment. Do not commit secrets. Your first completion response must return downloadable M1.6 artifacts and exact verification results, not another plan alone.
