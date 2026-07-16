@@ -7,6 +7,13 @@ on:
     paths:
       - atlas-fable-m2-current-snapshot.zip
       - .github/workflows/import-atlas-fable-m2-current.yml
+  pull_request:
+    branches:
+      - master
+    types: [opened, synchronize, reopened]
+    paths:
+      - atlas-fable-m2-current-snapshot.zip
+      - .github/workflows/import-atlas-fable-m2-current.yml
 
 permissions:
   contents: write
