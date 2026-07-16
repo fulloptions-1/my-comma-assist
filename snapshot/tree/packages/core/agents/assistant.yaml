@@ -1,0 +1,11 @@
+id: assistant-agent
+version: 1
+name: Assistant
+description: General assistant driven by a model provider through the deterministic kernel.
+handler: llm
+system_prompt: You are Atlas, a concise assistant. Ask the user when information is missing.
+tools:
+  - car.read_history
+intents:
+  - assistant
+  - chat

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<title>Atlas</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header>
+  <h1>Atlas</h1>
+  <div class="head-actions">
+    <span id="mode" class="muted"></span>
+    <button id="btnSettings" class="icon" aria-label="Settings">&#9881;</button>
+    <button id="btnLogout" class="icon hidden" aria-label="Log out">&#10162;</button>
+  </div>
+</header>
+<main>
+  <section id="view-login" class="card stack hidden" aria-label="Login">
+    <h2>Owner login</h2>
+    <p class="muted">Enter the Atlas access secret.</p>
+    <input id="loginSecret" type="password" autocomplete="current-password" placeholder="Access secret">
+    <button id="btnLogin">Log in</button>
+    <div id="loginError" class="error" role="alert"></div>
+  </section>
+
+  <section id="view-chat" class="hidden">
+    <div class="card stack">
+      <div class="row">
+        <select id="target" aria-label="Agent"></select>
+        <button id="btnRuns" class="secondary" aria-expanded="false">History</button>
+      </div>
+      <textarea id="message" placeholder="Ask Atlas…" aria-label="Message"></textarea>
+      <button id="btnSend">Send</button>
+      <div id="sendError" class="error" role="alert"></div>
+    </div>
+    <div id="runList" class="hidden" aria-label="Run history"></div>
+    <div id="thread" aria-live="polite"></div>
+  </section>
+
+  <section id="view-settings" class="hidden stack" aria-label="Settings">
+    <div class="card stack">
+      <h2>Anthropic</h2>
+      <div id="anthropicStatus" class="muted"></div>
+      <input id="anthropicKey" type="password" autocomplete="off" placeholder="sk-ant-…">
+      <div class="row">
+        <button id="btnSaveAnthropic">Save key</button>
+        <button id="btnTestAnthropic" class="secondary">Test</button>
+        <button id="btnRemoveAnthropic" class="secondary">Remove key</button>
+      </div>
+      <div id="anthropicTest" class="muted"></div>
+    </div>
+    <div class="card stack">
+      <h2>OpenAI-compatible</h2>
+      <div id="openaiStatus" class="muted"></div>
+      <input id="openaiBase" placeholder="Base URL, e.g. https://host/v1">
+      <input id="openaiModel" placeholder="Model id (optional default)">
+      <input id="openaiKey" type="password" autocomplete="off" placeholder="API key">
+      <div class="row">
+        <button id="btnSaveOpenai">Save provider</button>
+        <button id="btnTestOpenai" class="secondary">Test</button>
+        <button id="btnRemoveOpenai" class="secondary">Remove key</button>
+      </div>
+      <div id="openaiTest" class="muted"></div>
+    </div>
+    <div class="card stack">
+      <h2>Assistant model</h2>
+      <div class="muted">New assistant chats use this profile. Paused chats keep the profile they started with.</div>
+      <div class="row">
+        <select id="activeProfile"></select>
+        <button id="btnApplyProfile">Apply</button>
+      </div>
+      <div id="activeProfileStatus" class="muted"></div>
+    </div>
+    <div class="card stack">
+      <h2>Model profiles</h2>
+      <div id="profileList"></div>
+      <input id="pfId" placeholder="Profile id">
+      <input id="pfProvider" placeholder="Provider (fake / anthropic / openai_compat)">
+      <input id="pfModel" placeholder="Model">
+      <div class="row">
+        <input id="pfMaxTokens" inputmode="numeric" placeholder="Max tokens (1024)">
+        <input id="pfBudget" inputmode="decimal" placeholder="Cost budget USD">
+      </div>
+      <div class="row">
+        <input id="pfInCost" inputmode="decimal" placeholder="$ / Mtok in">
+        <input id="pfOutCost" inputmode="decimal" placeholder="$ / Mtok out">
+      </div>
+      <input id="pfFallback" placeholder="Fallback profile id">
+      <button id="btnSaveProfile">Save profile</button>
+      <div id="settingsError" class="error" role="alert"></div>
+    </div>
+    <div class="card stack">
+      <h2>Diagnostics</h2>
+      <pre id="diag"></pre>
+    </div>
+    <button id="btnBack" class="secondary">Back to chat</button>
+  </section>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>

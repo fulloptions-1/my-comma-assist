@@ -1,0 +1,5 @@
+id: core
+version: 1
+agents:
+  - agents/concierge.yaml
+  - agents/assistant.yaml

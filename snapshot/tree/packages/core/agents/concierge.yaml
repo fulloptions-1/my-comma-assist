@@ -1,0 +1,7 @@
+id: concierge-agent
+version: 1
+name: Concierge
+description: Resolves general requests to the right capability.
+handler: concierge
+intents: []
+tools: []

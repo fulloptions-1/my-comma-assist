@@ -1,0 +1,15 @@
+id: car-maintenance-agent
+version: 1
+name: Car Maintenance Agent
+description: Logs and queries vehicle maintenance history.
+handler: car_maintenance
+intents:
+  - oil
+  - tire
+  - tyre
+  - car maintenance
+  - vehicle service
+  - insurance renewal
+tools:
+  - car.read_history
+  - car.log_maintenance
