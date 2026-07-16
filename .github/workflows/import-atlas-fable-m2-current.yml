@@ -6,6 +6,7 @@ on:
       - atlas-fable-m2-current
     paths:
       - atlas-fable-m2-current-snapshot.zip
+      - .github/workflows/import-atlas-fable-m2-current.yml
 
 permissions:
   contents: write
