@@ -25,7 +25,7 @@ jobs:
           ref: atlas-fable-m2-current
           fetch-depth: 0
 
-      - name: Verify and unpack current deployed source
+      - name: Verify and publish extracted source
         shell: bash
         run: |
           python - <<'PY'
@@ -39,6 +39,8 @@ jobs:
           root = Path.cwd().resolve()
           archive = root / "atlas-fable-m2-current-snapshot.zip"
           expected = "31bab6e16af95b35c1ad73be9b5f72303a740e12740b2cc4aa2d5d4bcd67ba24"
+          target = root / "snapshot" / "tree"
+          manifest = root / "snapshot" / "MANIFEST.sha256"
 
           if not archive.is_file():
               raise SystemExit(f"Missing {archive.name}")
@@ -47,29 +49,32 @@ jobs:
           if actual != expected:
               raise SystemExit(f"SHA-256 mismatch: expected {expected}, got {actual}")
 
+          if target.exists():
+              shutil.rmtree(target)
+          target.mkdir(parents=True)
+
           with zipfile.ZipFile(archive) as zf:
               members = zf.infolist()
               for member in members:
-                  destination = (root / member.filename).resolve()
-                  if root not in destination.parents and destination != root:
+                  destination = (target / member.filename).resolve()
+                  if target not in destination.parents and destination != target:
                       raise SystemExit(f"Unsafe ZIP path: {member.filename}")
+              zf.extractall(target)
 
-              for child in root.iterdir():
-                  if child.name in {".git", archive.name}:
-                      continue
-                  if child.is_dir():
-                      shutil.rmtree(child)
-                  else:
-                      child.unlink()
+          rows = []
+          for path in sorted(p for p in target.rglob("*") if p.is_file()):
+              relative = path.relative_to(target).as_posix()
+              digest = hashlib.sha256(path.read_bytes()).hexdigest()
+              rows.append(f"{digest}  {relative}")
+          manifest.write_text("\n".join(rows) + "\n", encoding="utf-8")
 
-              zf.extractall(root)
-
-          archive.unlink()
-          print(f"Imported {len(members)} files from the current Atlas snapshot")
+          print(f"Verified archive {actual}")
+          print(f"Published {len(rows)} files under snapshot/tree")
           PY
 
       - name: Install and verify snapshot
         shell: bash
+        working-directory: snapshot/tree
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -78,11 +83,15 @@ jobs:
           node --check atlas/static/app.js
           python scripts/check_app_import.py
 
-      - name: Commit verified snapshot
+      - name: Commit verified extracted source
         shell: bash
         run: |
           git config user.name "atlas-snapshot-bot"
           git config user.email "atlas-snapshot-bot@users.noreply.github.com"
-          git add -A
-          git commit -m "Publish current deployed Atlas source for Fable M1.6 and M2"
+          git add snapshot/tree snapshot/MANIFEST.sha256
+          if git diff --cached --quiet; then
+            echo "Extracted snapshot is already current"
+            exit 0
+          fi
+          git commit -m "Publish extracted current Atlas source for Fable M1.6 and M2"
           git push origin HEAD:atlas-fable-m2-current
