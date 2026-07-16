@@ -1,0 +1,87 @@
+name: Import current Atlas Fable snapshot
+
+on:
+  push:
+    branches:
+      - atlas-fable-m2-current
+    paths:
+      - atlas-fable-m2-current-snapshot.zip
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atlas-fable-m2-current-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out snapshot branch
+        uses: actions/checkout@v4
+        with:
+          ref: atlas-fable-m2-current
+          fetch-depth: 0
+
+      - name: Verify and unpack current deployed source
+        shell: bash
+        run: |
+          python - <<'PY'
+          from __future__ import annotations
+
+          import hashlib
+          import shutil
+          import zipfile
+          from pathlib import Path
+
+          root = Path.cwd().resolve()
+          archive = root / "atlas-fable-m2-current-snapshot.zip"
+          expected = "31bab6e16af95b35c1ad73be9b5f72303a740e12740b2cc4aa2d5d4bcd67ba24"
+
+          if not archive.is_file():
+              raise SystemExit(f"Missing {archive.name}")
+
+          actual = hashlib.sha256(archive.read_bytes()).hexdigest()
+          if actual != expected:
+              raise SystemExit(f"SHA-256 mismatch: expected {expected}, got {actual}")
+
+          with zipfile.ZipFile(archive) as zf:
+              members = zf.infolist()
+              for member in members:
+                  destination = (root / member.filename).resolve()
+                  if root not in destination.parents and destination != root:
+                      raise SystemExit(f"Unsafe ZIP path: {member.filename}")
+
+              for child in root.iterdir():
+                  if child.name in {".git", archive.name}:
+                      continue
+                  if child.is_dir():
+                      shutil.rmtree(child)
+                  else:
+                      child.unlink()
+
+              zf.extractall(root)
+
+          archive.unlink()
+          print(f"Imported {len(members)} files from the current Atlas snapshot")
+          PY
+
+      - name: Install and verify snapshot
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pytest -q
+          python -m compileall -q atlas tests scripts
+          node --check atlas/static/app.js
+          python scripts/check_app_import.py
+
+      - name: Commit verified snapshot
+        shell: bash
+        run: |
+          git config user.name "atlas-snapshot-bot"
+          git config user.email "atlas-snapshot-bot@users.noreply.github.com"
+          git add -A
+          git commit -m "Publish current deployed Atlas source for Fable M1.6 and M2"
+          git push origin HEAD:atlas-fable-m2-current
