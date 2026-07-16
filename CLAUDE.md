@@ -2,25 +2,36 @@
 
 Work only with public repository `fulloptions-1/my-comma-assist`, branch `atlas-fable-m2-current`.
 
-The authoritative current source is **not** the inherited root source tree. It is the verified archive:
+The authoritative current source is **not** the inherited root source tree. It has now been published as plain files under:
 
-`atlas-fable-m2-current-snapshot.zip`
+```text
+snapshot/tree/
+```
 
-SHA-256:
+The complete per-file integrity ledger is:
 
-`31bab6e16af95b35c1ad73be9b5f72303a740e12740b2cc4aa2d5d4bcd67ba24`
+```text
+snapshot/MANIFEST.sha256
+```
 
-Read `SNAPSHOT_INSTRUCTIONS.md`, fetch the archive through the GitHub connector, verify its checksum, and extract it into a fresh local directory named `atlas-current`. Work only inside that extracted directory.
+The source was extracted from the verified archive:
 
-The archive contains the actual deployed-source baseline after M1.5 and the live Anthropic tool-name hotfix. It also contains the authoritative current versions of:
+```text
+atlas-fable-m2-current-snapshot.zip
+SHA-256: 31bab6e16af95b35c1ad73be9b5f72303a740e12740b2cc4aa2d5d4bcd67ba24
+```
 
-- `CLAUDE.md`
-- `FABLE5_PROMPT.md`
-- `docs/LIVE_PRODUCT_GAPS.md`
-- `docs/NEXT_ACCEPTANCE_MATRIX.md`
+Read `SNAPSHOT_INSTRUCTIONS.md`. Do not spend context fetching or decoding the binary archive. Use the published files under `snapshot/tree/` and reconstruct a fresh local workspace named `atlas-current` as instructed.
+
+The published tree contains the actual deployed-source baseline after M1.5 and the live Anthropic tool-name hotfix, including:
+
+- `snapshot/tree/CLAUDE.md`
+- `snapshot/tree/FABLE5_PROMPT.md`
+- `snapshot/tree/docs/LIVE_PRODUCT_GAPS.md`
+- `snapshot/tree/docs/NEXT_ACCEPTANCE_MATRIX.md`
 - all production source, tests, package definitions, scripts, and deployment docs
 
-After extraction, read those files and every tracked source/test file before editing.
+After reconstruction, read those files and every relevant source/test file before editing.
 
 ## Current live state
 
@@ -47,4 +58,4 @@ The current product is a strong M1.5 foundation, not the complete system. The ne
 - Produce auditable tree/patch/manifest checkpoints for ChatGPT.
 - Continue independently through coherent milestones; checkpoint before moving onward.
 
-Start with the extracted archive's `FABLE5_PROMPT.md` and follow it completely.
+Start with `SNAPSHOT_INSTRUCTIONS.md`, reconstruct `atlas-current`, then execute `atlas-current/FABLE5_PROMPT.md` completely.
